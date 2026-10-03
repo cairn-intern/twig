@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          check-latest: true
+
+      - name: Check formatting
+        if: runner.os == 'Linux'
+        run: |
+          diffs=$(gofmt -l .)
+          if [ -n "$diffs" ]; then
+            echo "Unformatted files found:"
+            echo "$diffs"
+            exit 1
+          fi
+
+      - name: Run go vet
+        run: go vet ./...
+
+      - name: Run tests
+        run: go test -v -count=1 ./...
+
+      - name: Build binary
+        run: go build -o twig .
+
+      - name: Smoke test --version
+        shell: bash
+        run: |
+          out=$(./twig --version)
+          echo "$out"
+          echo "$out" | grep -q "twig 0.7.1"
