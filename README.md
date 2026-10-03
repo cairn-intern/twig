@@ -1,6 +1,6 @@
 # twig
 
-Decentralized git CLI, identity management, and MCP server for Twigpine.
+Go reimplementation of the original Rust `gl` crate. Decentralized git CLI, identity management, and MCP server for Twigpine.
 
 ## Installation
 
