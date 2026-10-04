@@ -317,8 +317,27 @@ func handleRepo(args []string) {
 			os.Exit(1)
 		}
 	case "list":
+		format := fs.String("format", "table", "Output format: table or json")
+		outputJSON := fs.Bool("json", false, "Output the complete response as JSON")
 		_ = fs.Parse(subArgs)
-		if err := commands.RepoList(*node, *dir); err != nil {
+		if *format != "table" && *format != "json" {
+			fmt.Fprintf(os.Stderr, "error: unsupported output format %q (expected table or json)\n", *format)
+			os.Exit(1)
+		}
+		if *outputJSON {
+			formatSet := false
+			fs.Visit(func(f *flag.Flag) {
+				if f.Name == "format" {
+					formatSet = true
+				}
+			})
+			if formatSet && *format != "json" {
+				fmt.Fprintln(os.Stderr, "error: cannot combine --json with --format table")
+				os.Exit(1)
+			}
+			*format = "json"
+		}
+		if err := commands.RepoList(*node, *dir, *format); err != nil {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 			os.Exit(1)
 		}

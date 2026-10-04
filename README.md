@@ -16,6 +16,29 @@ Zero external dependencies. Builds with Go 1.26 or newer.
 twig <command> [arguments...]
 ```
 
+### Repository list output
+
+```bash
+twig repo list                       # Human-readable table (default)
+twig repo list --format table        # Explicit table output
+twig repo list --json                # Complete JSON array for scripts
+twig repo list --format json         # Equivalent to --json
+```
+
+The table shows name, owner, visibility, updated date, and description. It lists
+all repositories visible to the caller, without filtering by owner. Empty results
+print `No repositories found.` in table mode and `[]` in JSON mode.
+
+Scripts that parsed the previous default JSON output must add `--json` or
+`--format json`. Output does not change automatically when piped or redirected.
+Only `table` and `json` are supported. Combining `--json` with `--format table`
+is an error; combining it with `--format json` is allowed.
+
+JSON retains the complete response, including additional metadata and exact
+numeric values. Human-readable cells strip terminal control characters and are
+limited to 200 characters. JSON values are not truncated. Errors go to stderr
+and return a nonzero exit status.
+
 ### Environment variables
 
 - `TWIGPINE_NODE`: Node URL (default: `https://node.gitlawb.com`). Falls back to legacy `GITLAWB_NODE` if unset.
@@ -61,6 +84,11 @@ twig <command> [arguments...]
 ```bash
 go test -v ./...
 ```
+
+CLI integration tests use a local HTTP fixture, not the public node. To exercise
+a built executable, set `TWIG_TEST_BINARY` to its absolute path and run
+`go test -count=1 -run TestRepoListCLI .`. Otherwise, these tests run the CLI
+entrypoint in a test subprocess.
 
 ## License
 

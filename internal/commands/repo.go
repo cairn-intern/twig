@@ -3,8 +3,10 @@ package commands
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
+	"os"
 
 	"github.com/Twigpine/twig/internal/client"
 	"github.com/Twigpine/twig/internal/did"
@@ -37,7 +39,10 @@ func RepoCreate(name, description string, private bool, branch, nodeURL, dirOver
 }
 
 // RepoList lists repositories on the node.
-func RepoList(nodeURL, dirOverride string) error {
+func RepoList(nodeURL, dirOverride, format string) error {
+	if format != "table" && format != "json" {
+		return fmt.Errorf("unsupported output format %q (expected table or json)", format)
+	}
 	kp, _ := identity.LoadKeypair(dirOverride)
 	nodeURL = client.ResolveNodeURL(nodeURL)
 	c := client.New(nodeURL, kp)
@@ -46,8 +51,15 @@ func RepoList(nodeURL, dirOverride string) error {
 	if err != nil {
 		return fmt.Errorf("listing repos: %w", err)
 	}
-
-	return PrintResponseOrError(resp)
+	if resp.StatusCode >= http.StatusBadRequest {
+		return PrintResponseOrError(resp)
+	}
+	defer resp.Body.Close()
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("reading response: %w", err)
+	}
+	return writeRepoList(os.Stdout, data, format)
 }
 
 // RepoClonePrint prints the clone command for a repository.
