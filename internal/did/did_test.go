@@ -64,3 +64,21 @@ func TestDIDDocument(t *testing.T) {
 		t.Fatalf("expected 1 verification method")
 	}
 }
+
+func BenchmarkEncodeBase58(b *testing.B) {
+	data := append([]byte{0xed, 0x01}, make([]byte, 32)...)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = EncodeBase58(data)
+	}
+}
+
+func BenchmarkDecodeBase58(b *testing.B) {
+	pub, _, _ := ed25519.GenerateKey(rand.Reader)
+	d := FromVerifyingKey(pub)
+	encoded := strings.TrimPrefix(d, "did:key:z")
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, _ = DecodeBase58(encoded)
+	}
+}
