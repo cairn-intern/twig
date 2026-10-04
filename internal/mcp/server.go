@@ -392,10 +392,10 @@ func (s *Server) callTool(name string, args map[string]interface{}) (string, err
 		repo, _ := args["repo"].(string)
 		owner, name := splitOwnerRepo(repo, s.resolveOwner())
 		body, _ := json.Marshal(map[string]interface{}{
-			"title": args["title"],
-			"head":  args["head"],
-			"base":  args["base"],
-			"body":  args["body"],
+			"title":         args["title"],
+			"source_branch": args["head"],
+			"target_branch": args["base"],
+			"body":          args["body"],
 		})
 		resp, err := s.Client.Post(fmt.Sprintf("/api/v1/repos/%s/%s/pulls", owner, name), body)
 		if err != nil {
