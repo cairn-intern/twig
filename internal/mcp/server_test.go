@@ -37,7 +37,7 @@ func TestReadWriteMessageRoundTrip(t *testing.T) {
 }
 
 func TestServerInitialize(t *testing.T) {
-	srv := NewServer("https://node.twigpine.com", nil)
+	srv := NewServer("https://node.gitlawb.com", nil)
 
 	inR, inW := io.Pipe()
 	outR, outW := io.Pipe()

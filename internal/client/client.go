@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	DefaultPublicNode   = "https://node.twigpine.com"
+	DefaultPublicNode   = "https://node.gitlawb.com"
 	LegacyPublicNode    = "https://node.gitlawb.com"
 	TotalRequestTimeout = 30 * time.Second
 	MaxRedirects        = 10

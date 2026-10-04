@@ -976,7 +976,7 @@ func handleMCP(args []string) {
 	kp, _ := identity.LoadKeypair(*dir)
 	nodeURL := *node
 	if nodeURL == "" {
-		nodeURL = "https://node.twigpine.com"
+		nodeURL = "https://node.gitlawb.com"
 	}
 
 	srv := mcp.NewServer(nodeURL, kp)

@@ -12,6 +12,15 @@ import (
 	"github.com/Twigpine/twig/internal/identity"
 )
 
+func TestResolveNodeURLDefault(t *testing.T) {
+	t.Setenv("TWIGPINE_NODE", "")
+	t.Setenv("GITLAWB_NODE", "")
+
+	if got := ResolveNodeURL(""); got != "https://node.gitlawb.com" {
+		t.Fatalf("expected working public node, got %q", got)
+	}
+}
+
 func TestSignRequestHeaders(t *testing.T) {
 	kp, err := identity.GenerateKeypair()
 	if err != nil {

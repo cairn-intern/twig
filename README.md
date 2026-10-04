@@ -18,7 +18,7 @@ twig <command> [arguments...]
 
 ### Environment variables
 
-- `TWIGPINE_NODE`: Node URL (default: `https://node.twigpine.com`). Falls back to legacy `GITLAWB_NODE` if unset.
+- `TWIGPINE_NODE`: Node URL (default: `https://node.gitlawb.com`). Falls back to legacy `GITLAWB_NODE` if unset.
 - `TWIGPINE_DIR`: Configuration directory (default: `~/.twigpine`). Falls back to legacy `~/.gitlawb` if present.
 
 ### Commands
