@@ -32,10 +32,10 @@ func PrCreate(repoInput, head, base, title, body, ownerOverride, nodeURL, dirOve
 	c := client.New(nodeURL, kp)
 
 	bodyBytes, _ := json.Marshal(map[string]interface{}{
-		"title": title,
-		"head":  head,
-		"base":  base,
-		"body":  body,
+		"title":         title,
+		"source_branch": head,
+		"target_branch": base,
+		"body":          body,
 	})
 
 	resp, err := c.Post(fmt.Sprintf("/api/v1/repos/%s/%s/pulls", owner, name), bodyBytes)
