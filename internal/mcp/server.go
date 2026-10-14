@@ -372,14 +372,18 @@ func (s *Server) callTool(name string, args map[string]interface{}) (string, err
 			return "", err
 		}
 		sigErr := token.VerifySignature()
+		isExp := token.IsExpired()
+		isNotYetValid := token.IsBeforeValid()
 		res, _ := json.MarshalIndent(map[string]interface{}{
-			"valid":           sigErr == nil && !token.IsExpired(),
+			"valid":           token.IsValid(),
 			"signature_valid": sigErr == nil,
-			"expired":         token.IsExpired(),
+			"expired":         isExp,
+			"not_yet_valid":   isNotYetValid,
 			"issuer":          token.Payload.Iss,
 			"audience":        token.Payload.Aud,
 			"capabilities":    token.Payload.Att,
 			"expires":         token.Payload.Exp,
+			"not_before":      token.Payload.Nbf,
 		}, "", "  ")
 		return string(res), nil
 
